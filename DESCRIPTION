@@ -2,9 +2,8 @@ Package: updraft
 Title: UpDraft - An R Based Workflow Manager
 Version: 0.1.0
 Authors@R: c(
-    person("Chris", "Schultz", email = "chris.schultz@uptake.com", role = c("aut", "cre")
+    person("Chris", "Schultz", email = "chris.schultz@uptake.com", role = c("aut", "cre"))
     )
-Authors: Chris Schultz
 Maintainer: Chris Schultz <chris.schultz@uptake.com>
 Description: This package is intended to build and execute modular based R
              workflows. UpDraft workflows are built through R6 classes and can be
