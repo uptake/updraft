@@ -12,7 +12,7 @@
 #'             \item{\bold{\code{name}}: Unique character string that identifies this module instance.}
 #'             \item{\bold{\code{fun}}: function this module will execute. Must be a character string.}
 #'             \item{\code{package}: Name of the R package \code{fun}. Must be a character string.}
-#'             \item{\code{assignedProcesses}: Integer number of processess to assign to the execution of this module.}
+#'             \item{\code{assignedProcesses}: Integer number of processes to assign to the execution of this module.}
 #'         }
 #'     }
 #' }

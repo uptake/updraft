@@ -4,12 +4,14 @@
 \alias{FutureFunctionCall}
 \title{Future Function Call}
 \usage{
-FutureFunctionCall(func, args, assignedProcesses = 1)
+FutureFunctionCall(func, args, funcName = NULL, assignedProcesses = 1)
 }
 \arguments{
 \item{func}{a R function object}
 
 \item{args}{arguments to be used when calling \code{func}}
+
+\item{funcName}{the name of the function being passed to this call, in case an error occurs it will log out the stack trace separately}
 
 \item{assignedProcesses}{number of processes to assign to the execution of
 this module. If the underlying execution code

@@ -1,9 +1,10 @@
 #' @title DAG Workflow Class
 #' @name DAGWorkflow
 #' @description Directed Acyclic Graph (DAG) workflow implementation
+#' @importFrom DiagrammeR add_global_graph_attrs create_edge_df create_graph create_node_df generate_dot grViz
 #' @importFrom igraph degree E edge graph.empty get.edgelist neighbors subgraph.edges V vertex
-#' @importFrom R6 R6Class
 #' @importFrom jsonlite toJSON
+#' @importFrom R6 R6Class
 #' @section Class Constructor:
 #' \describe{
 #'     \item{\code{new(name = "")}}{
@@ -508,7 +509,7 @@ DAGWorkflow <- R6::R6Class("DAGWorkflow"
             diagrammerGraph <- DiagrammeR::create_graph(nodes_df = nodes_df
                                                         , edges_df = edges_df
                                                         , graph_name = self$getName())
-            diagrammerGraph <- DiagrammeR::set_global_graph_attrs(diagrammerGraph, "layout", "dot", attr_type = "graph")
+            diagrammerGraph <- DiagrammeR::add_global_graph_attrs(diagrammerGraph, "layout", "dot", attr_type = "graph")
             return(DiagrammeR::grViz(DiagrammeR::generate_dot(diagrammerGraph)))
             
         }

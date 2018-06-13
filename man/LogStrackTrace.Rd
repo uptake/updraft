@@ -5,11 +5,20 @@
 \alias{LogStackTrace}
 \title{Log Stack Trace}
 \usage{
-LogStackTrace(charLimit = 256)
+LogStackTrace(moduleName, errorMessage, fileName = NULL, charLimit = 256,
+  objectLimit = 1e+05)
 }
 \arguments{
+\item{moduleName}{the name of the module that triggered the stack trace}
+
+\item{errorMessage}{the error message of the the error that triggered the stack trace}
+
+\item{fileName}{the name of the file to output the StackTrace too. If not specified will default to logger. Captured via sink}
+
 \item{charLimit}{character limit to limit logger statements during stack
 trace.}
+
+\item{objectLimit}{the size in bytes that an object will be replaced with its class name when printing out the stack. Default is 10kb}
 }
 \value{
 \code{NULL}.
