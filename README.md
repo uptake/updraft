@@ -1,6 +1,6 @@
 ## UpDraft - An R Based Workflow Manager
 
-[![Build Status]https://travis-ci.org/UptakeOpenSource/updraft.svg?branch=master()](https://travis-ci.org/UptakeOpenSource/updraft)
+[![Build Status](https://travis-ci.org/UptakeOpenSource/updraft.svg?branch=master)](https://travis-ci.org/UptakeOpenSource/updraft)
 
 This package is intended to build and execute modular based R workflows. UpDraft workflows are built through R6 classes and can be saved to disk in JSON format. UpDraft workflow execution supports both serial and parallel execution without a user needing to directly interface with a multiprocessing or scheduling library. Plus, UpDraft can visualize workflows. It's pretty cool.
 
