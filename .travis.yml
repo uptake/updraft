@@ -8,3 +8,4 @@ before_install:
 
 after_success:
     - Rscript -e 'install.packages("covr"); covr::codecov()'
+
