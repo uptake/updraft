@@ -37,6 +37,9 @@ test_that("Testing LogStackTrace works with no file", {
     output <- capture.output(value <- FutureFunctionCall(func = func2, args = list(a=1,c=2)))
     expect_error(future::value(value))
     expect_true(grepl("ERROR",value$value$message))
+    print(class(value$value$message))  # TODO DEBUG
+    print(class(value))  # TODO DEBUG
+    print(value$value$message)  # TODO DEBUG
 })
 
 test_that("Testing LogStackTrace works with a file", {
