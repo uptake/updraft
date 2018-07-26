@@ -4,6 +4,11 @@
 # Clear workspace.
 rm(list=ls(all=TRUE))
 
+# Set Up Testing Directory Paths
+baseDir <- normalizePath(file.path('.'))
+testInputDir <- normalizePath(file.path(baseDir,'inst'))
+workingDir <- normalizePath(file.path(baseDir, "output"))
+
 # Break line in log.
 context("\n>> connection_directed_unpack")
 
