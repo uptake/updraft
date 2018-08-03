@@ -148,7 +148,7 @@ PackageFunctionModule <- R6::R6Class("PackageFunctionModule"
 
             private$futurePromise <- NULL
 
-            return(NULL)
+            return(invisible(NULL))
         }
         
         , errorCheck = function(executionCheck = FALSE
@@ -228,7 +228,7 @@ PackageFunctionModule <- R6::R6Class("PackageFunctionModule"
                                                             , assignedProcesses = private$assignedProcesses)
             }
 
-            return(NULL)
+            return(invisible(NULL))
         }
     )
     

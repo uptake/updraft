@@ -218,7 +218,7 @@ DAGWorkflow <- R6::R6Class("DAGWorkflow"
                 })    
             }
             
-            return(NULL)
+            return(invisible(NULL))
         }
         
         , addModules = function(modules) {
@@ -244,7 +244,7 @@ DAGWorkflow <- R6::R6Class("DAGWorkflow"
                 })   
             }
             
-            return(NULL)
+            return(invisible(NULL))
         }
         
         , errorCheck = function(executionCheck = FALSE

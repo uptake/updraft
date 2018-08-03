@@ -35,5 +35,5 @@ CheckInterfaceImplementation <- function(R6Class) {
         UpDraftSettings$errorLogger(R6Class$classname, ' must implement ', methodDifferences, " method")
     }
     
-    return(NULL)
+    return(invisible(NULL))
 }

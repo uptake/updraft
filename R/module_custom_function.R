@@ -128,7 +128,7 @@ CustomFunctionModule <- R6::R6Class("CustomFunctionModule"
          
             private$futurePromise <- NULL
          
-            return(NULL)
+            return(invisible(NULL))
         }
      
         , errorCheck = function(executionCheck = FALSE
@@ -146,7 +146,7 @@ CustomFunctionModule <- R6::R6Class("CustomFunctionModule"
                 UpDraftSettings$errorLogger("fun must be a reference to a function")
             }
          
-            return(NULL)
+            return(invisible(NULL))
         }
      
         , getFuncObj = function() {
