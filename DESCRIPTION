@@ -27,4 +27,4 @@ Suggests:
 VignetteBuilder: knitr
 License: file LICENSE
 LazyData: NA
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

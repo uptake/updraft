@@ -25,6 +25,7 @@ Defines a contract of implementation for any workflow based class, i.e. a class 
      \item{\code{getStartingModules()}}{Gets a list of modules that are the starting modules of a workflow.}
      \item{\code{getDownstreamModules(module)}}{Gets modules downstream of \code{module} in a workflow.}
      \item{\code{getUpstreamModules(module)}}{Gets modules upstream of \code{module} in a workflow.}
+     \item{\code{hasCompletedAllDownstreamModules(module)}}{Indicates if all modules downstream of \code{module} in a workflow have completed.}
      \item{\code{initFromFile(filename)}}{Initializes this workflow from a save state stored in \code{filename}.}
      \item{\code{removeConnection(connection)}}{Removes \code{connection}, an implementation instance of \code{ConnectionInterface}, to this workflow.}
      \item{\code{removeModule(module)}}{Adds \code{module}, an implementation instance of \code{ModuleInterface}, to this workflow.}

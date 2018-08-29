@@ -75,6 +75,13 @@ Directed Acyclic Graph (DAG) workflow implementation
             \item{\bold{Returns}: list of downstream modules}
         }
     }
+    \item{\code{hasCompletedAllDownstreamModules(module)}}{
+        \itemize{
+            \item{Checks the completion of all downstream modules of \code{module}.}
+            \item{\bold{\code{module}}: valid implementation \code{ModuleInterface} obj or name of module that is present in a workflow.}
+            \item{\bold{Returns}: logical indicating all downstream modules are complete}
+        }
+    }
     \item{\code{getEndingModules()}}{
         \itemize{
             \item{Gets a list of ending modules in a workflow.}
