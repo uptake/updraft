@@ -356,6 +356,16 @@ DAGWorkflow <- R6::R6Class("DAGWorkflow"
                                         , "out"))
         }
         
+        , hasCompletedAllDownstreamModules = function(module) {
+            downstreamModules <- self$getDownstreamModules(module)
+            downstreamCompletedVec <- vapply(
+                downstreamModules
+                , function(m) {m$hasCompleted()}
+                , logical(1)
+            )
+            return(all(downstreamCompletedVec))
+        }
+        
         , getEndingModules = function() {
             endingModules <- list()
             

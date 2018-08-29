@@ -109,7 +109,17 @@ Execute <- function(workflow
                 }
             }
             
-            #TODO: clear cached output in modules when not needed anymore
+            if (clearCache){
+                # Clear cached output in any upstream modules where all of its downstream 
+                # dependencies are complete
+                for (upstreamModule in upstreamModules) {
+                    if (workflow$hasCompletedAllDownstreamModules(upstreamModule)) {
+                        upstreamModule$clearOutputCache()
+                    }
+                }
+            }
+            
+            
         }
         modulesToExecute <- modulesToExecute[as.logical(lapply(modulesToExecute, is.Module))] # clears out NaNs when modules moved from modulesToExecute to modulesToExecute
     }
