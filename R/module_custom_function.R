@@ -117,7 +117,7 @@ CustomFunctionModule <- R6::R6Class("CustomFunctionModule"
             private$name <- name
             private$fun <- fun
          
-            self$errorCheck()
+            return(self$errorCheck())
         }
      
         , clearOutputCache = function() {
@@ -128,7 +128,7 @@ CustomFunctionModule <- R6::R6Class("CustomFunctionModule"
          
             private$futurePromise <- NULL
          
-            return(invisible(NULL))
+            return(invisible(self))
         }
      
         , errorCheck = function(executionCheck = FALSE
@@ -146,7 +146,7 @@ CustomFunctionModule <- R6::R6Class("CustomFunctionModule"
                 UpDraftSettings$errorLogger("fun must be a reference to a function")
             }
          
-            return(invisible(NULL))
+            return(invisible(self))
         }
      
         , getFuncObj = function() {
@@ -193,7 +193,7 @@ CustomFunctionModule <- R6::R6Class("CustomFunctionModule"
                                                         , args =  args
                                                         , funcName = self$getName())
          
-            return(NULL)
+            return(invisible(NULL))
         }
     )      
  

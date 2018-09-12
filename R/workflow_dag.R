@@ -196,7 +196,7 @@ DAGWorkflow <- R6::R6Class("DAGWorkflow"
             private$connections <- list()
             private$graph <- igraph::graph.empty()
 
-            self$errorCheck()
+            return(self$errorCheck())
         }
 
         , addConnections = function(connections) {
@@ -225,7 +225,7 @@ DAGWorkflow <- R6::R6Class("DAGWorkflow"
                 })
             }
 
-            return(invisible(NULL))
+            return(invisible(self))
         }
 
         , addModules = function(modules) {
@@ -251,7 +251,7 @@ DAGWorkflow <- R6::R6Class("DAGWorkflow"
                 })
             }
 
-            return(invisible(NULL))
+            return(invisible(self))
         }
 
         , errorCheck = function(executionCheck = FALSE
@@ -301,7 +301,7 @@ DAGWorkflow <- R6::R6Class("DAGWorkflow"
                 }
             }
 
-            return(NULL)
+            return(invisible(self))
         }
 
         , getWorkflowInputs = function() {
@@ -440,7 +440,7 @@ DAGWorkflow <- R6::R6Class("DAGWorkflow"
 
             private$connections[connection] <- NULL
 
-            return(NULL)
+            return(invisible(self))
         }
 
         , removeModule = function(module)  {
@@ -461,7 +461,7 @@ DAGWorkflow <- R6::R6Class("DAGWorkflow"
                                        , names(igraph::E(private$graph)))
             private$connections[connectionsLost] <- NULL
 
-            return(NULL)
+            return(invisible(self))
         }
 
         , save = function(filename) {
@@ -482,7 +482,7 @@ DAGWorkflow <- R6::R6Class("DAGWorkflow"
 
             write(jsonlite::toJSON(workflowData), filename)
 
-            return(NULL)
+            return(invisible(self))
         }
 
         , visualize = function() {

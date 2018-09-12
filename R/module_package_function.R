@@ -137,7 +137,7 @@ PackageFunctionModule <- R6::R6Class("PackageFunctionModule"
                 private$assignedProcesses <- assignedProcesses   
             }
             
-            self$errorCheck()
+            return(self$errorCheck())
         }
         
         , clearOutputCache = function() {
@@ -148,7 +148,7 @@ PackageFunctionModule <- R6::R6Class("PackageFunctionModule"
 
             private$futurePromise <- NULL
 
-            return(invisible(NULL))
+            return(invisible(self))
         }
         
         , errorCheck = function(executionCheck = FALSE
@@ -170,7 +170,7 @@ PackageFunctionModule <- R6::R6Class("PackageFunctionModule"
                 UpDraftSettings$errorLogger("assignedProcesses must be a single whole number numeric")    
             }
             
-            return(NULL)
+            return(invisible(self))
         }
         
         , getName = function() {
