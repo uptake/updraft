@@ -5,8 +5,8 @@
 \alias{LogStackTrace}
 \title{Log Stack Trace}
 \usage{
-LogStackTrace(moduleName, errorMessage, fileName = NULL, charLimit = 256,
-  objectLimit = 1e+05)
+LogStackTrace(moduleName, errorMessage, fileName = NULL,
+  charLimit = 256, objectLimit = 1e+05)
 }
 \arguments{
 \item{moduleName}{the name of the module that triggered the stack trace}
