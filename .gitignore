@@ -1,0 +1,17 @@
+# This is a file telling Git what other files to ignore
+
+# R stuff
+*.Rhistory
+*.Rproj
+*.rda
+*.rds
+*.Rdata
+
+# data files
+*.csv
+**/*.csv
+**/*.xlsx
+**/*.pdf
+
+# other misc stuff
+*.DS_Store
