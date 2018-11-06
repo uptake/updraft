@@ -58,7 +58,7 @@ FutureFunctionCall <- function(func
             {withCallingHandlers(
                 {do.call(func, args)}
                 , error = function(err) {
-                    updraft:::LogStackTrace(moduleName = funcName, errorMessage = err, fileName = funcName)
+                    LogStackTrace(moduleName = funcName, errorMessage = err, fileName = funcName)
                     UpDraftSettings$errorLogger(err)
                 }
             )}
@@ -83,6 +83,7 @@ FutureFunctionCall <- function(func
 #' @param charLimit character limit to limit logger statements during stack
 #'                  trace.
 #' @param objectLimit the size in bytes that an object will be replaced with its class name when printing out the stack. Default is 10kb
+#' @importFrom utils capture.output dump.frames
 #' @return \code{NULL}.
 LogStackTrace <- function(  moduleName
                           , errorMessage
@@ -91,7 +92,7 @@ LogStackTrace <- function(  moduleName
                           , objectLimit = 1e5  #bytes
                           ) {
     calls <- sys.calls()
-    returnMessage <- capture.output({
+    returnMessage <- utils::capture.output({
         UpDraftSettings$infoLogger(sprintf('--------- *UpDraft* Start of Stack Trace from: %s ---------',moduleName))
         for(call in calls){
             tryCatch({
