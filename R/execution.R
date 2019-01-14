@@ -121,6 +121,7 @@ Execute <- function(workflow
             
             
         }
+      # test change
         modulesToExecute <- modulesToExecute[as.logical(lapply(modulesToExecute, is.Module))] # clears out NaNs when modules moved from modulesToExecute to modulesToExecute
     }
     
