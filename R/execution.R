@@ -25,6 +25,9 @@
 #'                            this feature is intended for debugging purposes
 #'                            -- will slow execution down and take up disk
 #'                            space.
+#' @param getModuleExecutionInfo A logical flag \code{TRUE}/\code{FALSE} that indicated
+#'                           whether the \code{list} indicating module execution information 
+#'                           should be returned after complete execution.
 #' @export 
 Execute <- function(workflow
                     , moduleArgs = NULL
@@ -32,6 +35,7 @@ Execute <- function(workflow
                     , mode = SERIAL_MODE
                     , clearCache = TRUE
                     , moduleInputsSaveDir = NULL
+                    , getModuleExecutionInfo = FALSE
 ) {
     if(!is.Workflow(workflow)) {
         UpDraftSettings$errorLogger("workflow parameter is not a valid workflow obj")
@@ -46,7 +50,9 @@ Execute <- function(workflow
     modulesToExecute <- workflow$getStartingModules() # queue of modules to check if dependecies have been met - once met, start the module execution
     modulesExecutionStarted <- list()
     monitorRate <- UpDraftSettings$monitorRate # cache this out of settings to avoid lookup costs
+    
     UpDraftSettings$infoLogger("*UpDraft* Starting Workflow Execution!!!!!*")
+    
     while (length(modulesToExecute) > 0) {
         # TODO:: no flag based wakeup mechanism in R that is concurrency proof
         # stuck using sleep to throttle this loop
@@ -56,7 +62,7 @@ Execute <- function(workflow
         for (moduleIndex in 1:length(modulesToExecute)) {
             module <- modulesToExecute[[moduleIndex]]
             upstreamModules <- workflow$getUpstreamModules(module)
-
+            
             areDependenciesMet <- TRUE
             for (upstreamModule in upstreamModules) {
                 if (!upstreamModule$hasCompleted()) {
@@ -64,7 +70,7 @@ Execute <- function(workflow
                     break
                 }
             }
-
+            
             if (areDependenciesMet) {
                 modulesToExecute[[moduleIndex]] <- NaN
                 
@@ -73,13 +79,13 @@ Execute <- function(workflow
                 for(upstreamModule in upstreamModules) {
                     # TODO: The following double for-loop is not be necessary if require one connection per argument
                     for (connection in workflow$getConnections(upstreamModule, module)) {
-                       for (argument in connection$getInputArgument()) {
-                           if (argument != '') {
-                               UpDraftSettings$infoLogger(paste0("*UpDraft* Retrieving ", upstreamModule$getName(), " for ", module$getName()))
-                               
-                               inputArguments[[argument]] <- connection$filterOutputValue(upstreamModule$getOutput())
-                           }
-                       }          
+                        for (argument in connection$getInputArgument()) {
+                            if (argument != '') {
+                                UpDraftSettings$infoLogger(paste0("*UpDraft* Retrieving ", upstreamModule$getName(), " for ", module$getName()))
+                                
+                                inputArguments[[argument]] <- connection$filterOutputValue(upstreamModule$getOutput())
+                            }
+                        }          
                     }
                 }
                 UpDraftSettings$infoLogger(paste0("*UpDraft* Starting ", module$getName()))
@@ -109,19 +115,8 @@ Execute <- function(workflow
                 }
             }
             
-            if (clearCache){
-                # Clear cached output in any upstream modules where all of its downstream 
-                # dependencies are complete
-                for (upstreamModule in upstreamModules) {
-                    if (workflow$hasCompletedAllDownstreamModules(upstreamModule)) {
-                        upstreamModule$clearOutputCache()
-                    }
-                }
-            }
-            
-            
+            #TODO: clear cached output in modules when not needed anymore
         }
-      # test change
         modulesToExecute <- modulesToExecute[as.logical(lapply(modulesToExecute, is.Module))] # clears out NaNs when modules moved from modulesToExecute to modulesToExecute
     }
     
@@ -129,7 +124,7 @@ Execute <- function(workflow
     endingModules <- workflow$getEndingModules()
     while (length(endingModules) > 0) {
         Sys.sleep(monitorRate)
-
+        
         for (moduleIndex in 1:length(endingModules)) {
             endingModule <- endingModules[[moduleIndex]]
             
@@ -143,10 +138,18 @@ Execute <- function(workflow
         endingModules <- endingModules[as.logical(lapply(endingModules, is.Module))]
     }
     
+    executionInfoList <- workflow$getWorkflowExecutionInfo()
     #TODO: Temp solution to clear out output caches
     if(clearCache) {
         for (module in workflow$getAllModules()) {
             module$clearOutputCache()
         }
     }
+    
+    if(getModuleExecutionInfo) {
+        return(executionInfoList)   
+    } else {
+        return(invisible(NULL))
+    }
+    
 }

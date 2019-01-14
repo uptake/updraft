@@ -118,5 +118,5 @@ LogStackTrace <- function(  moduleName
         writeLines(text = returnMessage,con = paste0(fileName,".error"))
         utils::dump.frames(dumpto = fileName,to.file = TRUE)
     }
-    return(invisible(NULL))
+    return(NULL)
 }

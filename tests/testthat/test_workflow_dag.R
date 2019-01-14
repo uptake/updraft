@@ -4,11 +4,6 @@
 # Clear workspace.
 rm(list=ls(all=TRUE))
 
-# Set Up Testing Directory Paths
-baseDir <- normalizePath(file.path('.'))
-testInputDir <- normalizePath(file.path(baseDir,'inst'))
-workingDir <- normalizePath(file.path(baseDir, "output"))
-
 # Break line in log.
 context("\n>> workflow_dag")
 
@@ -78,10 +73,6 @@ test_that("Testing DAGWorkflow Class constructor and obj methods run to completi
         TRUE
     })
     expect_true({
-        workflow$hasCompletedAllDownstreamModules('mod1')
-        TRUE
-    })
-    expect_true({
         workflow$getConnections('mod1', 'mod2')
         TRUE
     })
@@ -126,7 +117,7 @@ test_that("Testing DAGWorkflow Class Static initFromFile Method", {
     })
 })
 
-test_that("Testing DAGWorkflow obj methods error when appropriate", {
+test_that("Testing DAGWorkflow obj methods error when appriopriate", {
     workflow <- DAGWorkflow$new()
     connection <- DirectedConnection$new("conn", "mod1", "mod2", '...')
     mod1 <- PackageFunctionModule$new("mod1", "paste")

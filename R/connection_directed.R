@@ -141,7 +141,7 @@ DirectedConnection <- R6::R6Class("DirectedConnection"
                                  , ...
         ) {
             # field values are checked in the constructor 
-            return(invisible(NULL))
+            return(NULL)
         }
         
         , filterOutputValue = function(outputValue) {

@@ -4,11 +4,6 @@
 # Clear workspace.
 rm(list=ls(all=TRUE))
 
-# Set Up Testing Directory Paths
-baseDir <- normalizePath(file.path('.'))
-testInputDir <- normalizePath(file.path(baseDir,'inst'))
-workingDir <- normalizePath(file.path(baseDir, "output"))
-
 # Break line in log.
 context("\n>> utils_connections")
 
@@ -36,7 +31,7 @@ UpDraftSettings$update(errorLogger = function(x){print(paste("ERROR!",lapply(x,a
 test_that("Testing LogStackTrace works with no file", {
     output <- capture.output(value <- FutureFunctionCall(func = func2, args = list(a=1,c=2)))
     expect_error(future::value(value))
-    # expect_true(grepl("ERROR",value$value$message))  # TODO Get this Unit Test Working with Travis
+    # expect_true(grepl("ERROR",value$value$message))
 })
 
 test_that("Testing LogStackTrace works with a file", {
