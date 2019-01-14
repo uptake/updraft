@@ -16,6 +16,3 @@
 
 # other misc stuff
 *.DS_Store
-
-# pkgdown stuff
-docs
