@@ -58,7 +58,7 @@ FutureFunctionCall <- function(func
             {withCallingHandlers(
                 {do.call(func, args)}
                 , error = function(err) {
-                    updraft:::LogStackTrace(moduleName = funcName, errorMessage = err, fileName = funcName)
+                    LogStackTrace(moduleName = funcName, errorMessage = err, fileName = funcName)
                     UpDraftSettings$errorLogger(err)
                 }
             )}

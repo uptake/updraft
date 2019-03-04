@@ -7,7 +7,9 @@ rm(list=ls(all=TRUE))
 # Set Up Testing Directory Paths
 baseDir <- normalizePath(file.path('.'))
 testInputDir <- normalizePath(file.path(baseDir,'inst'))
-workingDir <- normalizePath(file.path(baseDir, "output"))
+
+outputDir <- file.path(tempdir(), "output")
+dir.create(outputDir)
 
 # Break line in log.
 context("\n>> workflow_dag")
@@ -54,7 +56,7 @@ test_that("Testing DAGWorkflow Class constructor and obj methods run to completi
         TRUE
     })
     expect_true({
-        workflow$save(file.path(workingDir, "test.json"))
+        workflow$save(file.path(outputDir, "test.json"))
         TRUE
     })
     expect_true({
@@ -102,7 +104,7 @@ test_that("Testing DAGWorkflow Class constructor and obj methods run to completi
         workflow$removeConnection(removeConnections[10])
         TRUE
     })
-    
+
     removeModules = paste0("mod", sample(1:50, 10))
     expect_true({
         workflow$removeModule(removeModules[1:9])
@@ -131,7 +133,7 @@ test_that("Testing DAGWorkflow obj methods error when appropriate", {
     connection <- DirectedConnection$new("conn", "mod1", "mod2", '...')
     mod1 <- PackageFunctionModule$new("mod1", "paste")
     mod2 <- PackageFunctionModule$new("mod2", "paste")
-    
+
     expect_error({
         workflow$addConnections(1.0)
     }, regexp = 'connection parameter')
@@ -240,11 +242,11 @@ test_that("Testing DAGWorkflow obj methods return values", {
 # CLEAN UP OUTPUT FILES.
 #########################
 # Rm output directory.
-outputDirs <- list.dirs(file.path(workingDir), recursive = FALSE)
+outputDirs <- list.dirs(file.path(outputDir), recursive = FALSE)
 unlink(outputDirs[grepl("output", outputDirs)], recursive = TRUE)
 
 # Rm misc data files.
-outputFiles <- list.files(workingDir, full.names = TRUE)
+outputFiles <- list.files(outputDir, full.names = TRUE)
 unlink(outputFiles[grepl("test.json", outputFiles)])
 
 
@@ -257,5 +259,5 @@ context("Unittest Output Directory Check")
 
 
 
-test_that("Output directory is empty.", expect_equal(length(list.files(workingDir)), 0))
+test_that("Output directory is empty.", expect_equal(length(list.files(outputDir)), 0))
 
