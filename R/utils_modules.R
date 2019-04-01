@@ -7,13 +7,13 @@
 #' @return logical vector
 GetFunctionArgs <- function(func) {
     argumentRequirements <- logical()
-    
+
     funArguments <- as.list(args(func))
     for (arg in names(funArguments)) {
         if (arg == "") {
             next
         }
-        
+
         if (arg == '...' || funArguments[arg] != "") {
             isRequired = FALSE
         } else {
@@ -22,7 +22,7 @@ GetFunctionArgs <- function(func) {
 
         argumentRequirements[arg] <- isRequired
     }
-    
+
     return(argumentRequirements)
 }
 
@@ -50,25 +50,25 @@ FutureFunctionCall <- function(func
         if(assignedProcesses > 1) {
             # TODO: temp set to multisession because packages uses UpDraft use multisession for parallelization
             modifiedFuturesPlan <- future::tweak(future::multisession, workers = assignedProcesses) # intermediate required to set new future plan
-            future::plan(modifiedFuturesPlan)    
+            future::plan(modifiedFuturesPlan)
         }
-        
+
         startTime = as.numeric(Sys.time())
         tryCatch(
             {withCallingHandlers(
                 {do.call(func, args)}
                 , error = function(err) {
-                    updraft:::LogStackTrace(moduleName = funcName, errorMessage = err, fileName = funcName)
+                    LogStackTrace(moduleName = funcName, errorMessage = err, fileName = funcName)
                     UpDraftSettings$errorLogger(err)
                 }
             )}
             , finally = {
                 if(!is.null(funcName)) {
-                    UpDraftSettings$infoLogger(sprintf('*UpDraft* %s took %g seconds to complete', funcName, as.numeric(Sys.time()) - startTime))   
+                    UpDraftSettings$infoLogger(sprintf('*UpDraft* %s took %g seconds to complete', funcName, as.numeric(Sys.time()) - startTime))
                 }
             }
         )
-        
+
     }))
 }
 
@@ -83,6 +83,7 @@ FutureFunctionCall <- function(func
 #' @param charLimit character limit to limit logger statements during stack
 #'                  trace.
 #' @param objectLimit the size in bytes that an object will be replaced with its class name when printing out the stack. Default is 10kb
+#' @importFrom utils capture.output dump.frames
 #' @return \code{NULL}.
 LogStackTrace <- function(  moduleName
                           , errorMessage
@@ -91,7 +92,7 @@ LogStackTrace <- function(  moduleName
                           , objectLimit = 1e5  #bytes
                           ) {
     calls <- sys.calls()
-    returnMessage <- capture.output({
+    returnMessage <- utils::capture.output({
         UpDraftSettings$infoLogger(sprintf('--------- *UpDraft* Start of Stack Trace from: %s ---------',moduleName))
         for(call in calls){
             tryCatch({
@@ -101,8 +102,8 @@ LogStackTrace <- function(  moduleName
                     call[argSizes] <- vapply(call[argSizes],FUN=function(x){paste('Class of:',paste(class(x),collapse = ','))},FUN.VALUE = vector(mode='character',length=1L))
                 }
                 functionCall <- deparse(call)
-                
-                functionCall <- substr(functionCall,1,charLimit)      
+
+                functionCall <- substr(functionCall,1,charLimit)
                 UpDraftSettings$infoLogger(functionCall)
             } , error = function(err) {
                 UpDraftSettings$infoLogger('Error while parsing stack trace: ', err)
@@ -111,7 +112,7 @@ LogStackTrace <- function(  moduleName
         UpDraftSettings$infoLogger(sprintf('--------- *UpDraft* End of Stack Trace from %s ---------',moduleName))
         UpDraftSettings$infoLogger(paste0("[FATAL ERROR]: ",errorMessage))
     })
-    
+
     if(is.null(fileName)){
         lapply(returnMessage,UpDraftSettings$infoLogger)
     }else{

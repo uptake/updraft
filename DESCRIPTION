@@ -1,16 +1,16 @@
 Package: updraft
-Title: UpDraft - An R Based Workflow Manager
+Title: An R Based Workflow Manager
 Version: 0.1.0
 Authors@R: c(
     person("Chris", "Schultz", email = "chris.schultz@uptake.com", role = c("aut", "cre"))
     )
 Maintainer: Chris Schultz <chris.schultz@uptake.com>
-Description: This package is intended to build and execute modular based R
-             workflows. UpDraft workflows are built through R6 classes and can be
-             saved to disk in JSON format. UpDraft workflow execution supports
-             both serial and parallel execution without a user needing to
-             directly interface with a multiprocessing or scheduling library.
-             Plus, UpDraft can visualize workflows. It's pretty cool.
+Description: Many workflows in R can be expressed as graphs of distinct processing steps.
+             Where these steps are independent of each other, there is an opportunity
+             to parallelize execution. This is where updraft comes in. updraft workflows
+             are built through R6 classes and can be saved to disk in JSON format.
+             UpDraft workflow execution supports both serial and parallel execution
+             without a user needing to directly interface with a multiprocessing or scheduling library. Plus, UpDraft can visualize workflows. It's pretty cool.
 Depends:
     R (>= 3.3.0)
 Imports:
@@ -24,7 +24,7 @@ Suggests:
     knitr,
     R.utils,
     testthat
-VignetteBuilder: knitr
 License: file LICENSE
 LazyData: NA
 RoxygenNote: 6.1.0
+Encoding: UTF-8
