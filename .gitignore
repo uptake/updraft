@@ -16,3 +16,10 @@
 
 # other misc stuff
 *.DS_Store
+
+# pkgdown stuff
+docs
+
+# build artifacts
+**/*.tar.gz
+updraft.Rcheck/

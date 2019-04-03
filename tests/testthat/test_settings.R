@@ -4,6 +4,13 @@
 # Clear workspace.
 rm(list=ls(all=TRUE))
 
+# Set Up Testing Directory Paths
+baseDir <- normalizePath(file.path('.'))
+testInputDir <- normalizePath(file.path(baseDir,'inst'))
+
+outputDir <- file.path(tempdir(), "output")
+dir.create(outputDir)
+
 # Break line in log.
 context("\n>> settings")
 
@@ -84,11 +91,11 @@ test_that("Testing UpDraftSettings active bindings reset logger settings", {
 # CLEAN UP OUTPUT FILES.
 #########################
 # Rm output directory.
-outputDirs <- list.dirs(file.path(workingDir), recursive = FALSE)
+outputDirs <- list.dirs(file.path(outputDir), recursive = FALSE)
 unlink(outputDirs[grepl("output", outputDirs)], recursive = TRUE)
 
 # Rm misc data files.
-outputFiles <- list.files(workingDir, full.names = TRUE)
+outputFiles <- list.files(outputDir, full.names = TRUE)
 
 ##################
 # FINALLY...
@@ -96,4 +103,4 @@ outputFiles <- list.files(workingDir, full.names = TRUE)
 # Check that nothing is in the output folder.
 context("Unittest Output Directory Check")
 
-test_that("Output directory is empty.", expect_equal(length(list.files(workingDir)), 0))
+test_that("Output directory is empty.", expect_equal(length(list.files(outputDir)), 0))

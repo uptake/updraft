@@ -4,6 +4,13 @@
 # Clear workspace.
 rm(list=ls(all=TRUE))
 
+# Set Up Testing Directory Paths
+baseDir <- normalizePath(file.path('.'))
+testInputDir <- normalizePath(file.path(baseDir,'inst'))
+
+outputDir <- file.path(tempdir(), "output")
+dir.create(outputDir)
+
 # Define Custom Function to reuse during unit tests
 func <- function(a, b) {
     return(a + b)
@@ -159,4 +166,4 @@ test_that("Check method return values", {
 # Check that nothing is in the output folder.
 context("Unittest Output Directory Check")
 
-test_that("Output directory is empty.", expect_equal(length(list.files(workingDir)), 0))
+test_that("Output directory is empty.", expect_equal(length(list.files(outputDir)), 0))
