@@ -8,7 +8,7 @@ rm(list=ls(all=TRUE))
 baseDir <- normalizePath(file.path('.'))
 testInputDir <- normalizePath(file.path(baseDir,'inst'))
 
-outputDir <- file.path(tempdir(), "output")
+outputDir <- file.path(baseDir, "output")
 dir.create(outputDir)
 
 # Define Custom Function to reuse during unit tests
