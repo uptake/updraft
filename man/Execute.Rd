@@ -5,7 +5,8 @@
 \title{Execute a Workflow}
 \usage{
 Execute(workflow, moduleArgs = NULL, argsContainer = NULL,
-  mode = SERIAL_MODE, clearCache = TRUE, moduleInputsSaveDir = NULL)
+  mode = SERIAL_MODE, clearCache = TRUE, moduleInputsSaveDir = NULL,
+  getModuleExecutionInfo = FALSE)
 }
 \arguments{
 \item{workflow}{implementation instance of \code{WorkflowInterface}}
@@ -37,6 +38,10 @@ Inputs are saved in .rds format in form of
 this feature is intended for debugging purposes
 -- will slow execution down and take up disk
 space.}
+
+\item{getModuleExecutionInfo}{A logical flag \code{TRUE}/\code{FALSE} that indicated
+whether the \code{list} indicating module execution information 
+should be returned after complete execution.}
 }
 \description{
 executes a workflow
