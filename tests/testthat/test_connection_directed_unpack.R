@@ -4,11 +4,12 @@
 # Clear workspace.
 rm(list=ls(all=TRUE))
 
+
 # Set Up Testing Directory Paths
 baseDir <- normalizePath(file.path('.'))
 testInputDir <- normalizePath(file.path(baseDir,'inst'))
 
-outputDir <- file.path(tempdir(), "output")
+outputDir <- file.path(baseDir, "output")
 dir.create(outputDir)
 
 # Break line in log.

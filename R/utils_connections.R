@@ -122,7 +122,7 @@ ExtractReturnStatements <- function(func) {
         return(unique(do.call(c, lapply(func, ExtractReturnStatements))))
     }
     
-    return(invisible(NULL))
+    return(NULL)
 }
 
 #' @title Create Directed Connections

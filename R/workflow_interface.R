@@ -15,15 +15,22 @@
 #'      \item{\code{getStartingModules()}}{Gets a list of modules that are the starting modules of a workflow.}
 #'      \item{\code{getDownstreamModules(module)}}{Gets modules downstream of \code{module} in a workflow.}
 #'      \item{\code{getUpstreamModules(module)}}{Gets modules upstream of \code{module} in a workflow.}
-#'      \item{\code{hasCompletedAllDownstreamModules(module)}}{Indicates if all modules downstream of \code{module} in a workflow have completed.}
 #'      \item{\code{initFromFile(filename)}}{Initializes this workflow from a save state stored in \code{filename}.}
 #'      \item{\code{removeConnection(connection)}}{Removes \code{connection}, an implementation instance of \code{ConnectionInterface}, to this workflow.}
 #'      \item{\code{removeModule(module)}}{Adds \code{module}, an implementation instance of \code{ModuleInterface}, to this workflow.}
 #'      \item{\code{save(filename)}}{Saves the state of this workflow into a file named \code{filename} so that future workflows can be initialized to this workflow.}
 #'      \item{\code{visualize()}}{Visualizes this workflow.}
+#'      \item{\code{getWorkflowExecutionInfo()}}{Returns a list with the following fields:}{
+#'                  \itemize{
+#'                           \item{\code{module} or \code{workflow} - Indicating the module / workflow name.}
+#'                           \item{\code{startTime} - Indicating the module exuecution start time.}
+#'                           \item{\code{endTime} - Indicating the module exuecution end times.}
+#'                           }
+#'                  }
 #' }
 #' @export
-WorkflowInterface <- R6::R6Class( "WorkflowInterface"
+WorkflowInterface <- R6::R6Class( 
+    classname = "WorkflowInterface"
     , inherit = UpDraftComponentInterface
     
     , public = list(
@@ -34,11 +41,11 @@ WorkflowInterface <- R6::R6Class( "WorkflowInterface"
         , addModules = function(modules) {
             UpDraftSettings$errorLogger("addModule not implemented in ", class(self)[1])
         }
-
+        
         , getWorkflowInputs = function() {
             UpDraftSettings$errorLogger("getWorkflowInputs not implemented in ", class(self)[1])
         }
-
+        
         , getModuleInputs = function(module) {
             UpDraftSettings$errorLogger("getModuleInputs not implemented in ", class(self)[1])
         }
@@ -54,7 +61,7 @@ WorkflowInterface <- R6::R6Class( "WorkflowInterface"
         , getAllModules = function() {
             UpDraftSettings$errorLogger("getModules not implemented in ", class(self)[1])
         }
-
+        
         , getStartingModules = function() {
             UpDraftSettings$errorLogger("getStartingModules not implemented in ", class(self)[1])
         }
@@ -62,13 +69,9 @@ WorkflowInterface <- R6::R6Class( "WorkflowInterface"
         , getDownstreamModules = function(module) {
             UpDraftSettings$errorLogger("getDownstreamModules not implemented in ", class(self)[1])
         }
-
+        
         , getUpstreamModules = function(module) {
             UpDraftSettings$errorLogger("getUpstreamModules not implemented in ", class(self)[1])    
-        }
-        
-        , hasCompletedAllDownstreamModules = function(module) {
-            UpDraftSettings$errorLogger("hasCompletedAllDownstreamModules not implemented in ", class(self)[1])
         }
         
         , removeConnection = function(connection) {
@@ -85,6 +88,22 @@ WorkflowInterface <- R6::R6Class( "WorkflowInterface"
         
         , visualize = function() {
             UpDraftSettings$errorLogger("visualize not implemented in ", class(self)[1])
+        }
+        
+        , getWorkflowExecutionInfo = function() {
+            allModuleExecutionInfoList <- lapply(self$getAllModules(), function(x) append(x$getExecutionTimings(), list(status = x$getExecutionStatus())))
+            names(allModuleExecutionInfoList) <- NULL
+            workflowInfo <- list(
+                list(
+                    objectType = 'workflow'
+                    , name = self$getName()
+                    , startTime = as.POSIXct(min(sapply(allModuleExecutionInfoList, function(x) x[['startTime']])), origin = '1970-01-01 00:00:00')
+                    , endTime = as.POSIXct(max(sapply(allModuleExecutionInfoList, function(x) x[['endTime']])), origin = '1970-01-01 00:00:00')    
+                    , status = all(sapply(allModuleExecutionInfoList, function(x) x[['status']]))
+                )
+            )
+            
+            return(append(workflowInfo, allModuleExecutionInfoList))
         }
     )
 )

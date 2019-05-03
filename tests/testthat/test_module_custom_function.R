@@ -8,7 +8,7 @@ rm(list=ls(all=TRUE))
 baseDir <- normalizePath(file.path('.'))
 testInputDir <- normalizePath(file.path(baseDir,'inst'))
 
-outputDir <- file.path(tempdir(), "output")
+outputDir <- file.path(baseDir, "output")
 dir.create(outputDir)
 
 # Define Custom Function to reuse during unit tests
@@ -89,9 +89,18 @@ test_that("Check CustomFunctionModule constructor class and methods that return 
         module
     }, "CustomFunctionModule")
     expect_is({
+        module$getExecutionTimings()
+    }, 'list')
+    expect_is({
         module$startExecution(list(a = 1, b = 2))
         module$getOutput()
     }, "numeric")
+    expect_is({
+        module$getExecutionTimings()[['startTime']]
+    }, c("POSIXct", "POSIXt"))
+    expect_is({
+        module$getExecutionTimings()[['endTime']]
+    }, c("POSIXct", "POSIXt"))
     expect_is({
         module$getName()
     }, "character")
@@ -115,10 +124,17 @@ test_that("Check CustomFunctionModule constructor class and methods that return 
 context("Expected Value Testing")
 test_that("Check method return values", {
     module <- CustomFunctionModule$new(name = "test", fun = func)
+    expect_null({module$getExecutionTimings()[['startTime']]})
+    expect_null({module$getExecutionTimings()[['endTime']]})
+    expect_equal({module$getExecutionTimings()[['name']]}, 'test')
+    expect_equal({module$getExecutionTimings()[['objectType']]}, 'module')
     expect_equal({
         module$startExecution(list(a = 1, b = 2))
         module$getOutput()
     }, 3)
+    expect_gt({
+        as.numeric(module$getExecutionTimings()[['endTime']] - module$getExecutionTimings()[['startTime']])
+    }, 0)
     expect_equal({
         module$getName()
     }, "test")

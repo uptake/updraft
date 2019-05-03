@@ -8,7 +8,7 @@ rm(list=ls(all=TRUE))
 baseDir <- normalizePath(file.path('.'))
 testInputDir <- normalizePath(file.path(baseDir,'inst'))
 
-outputDir <- file.path(tempdir(), "output")
+outputDir <- file.path(baseDir, "output")
 dir.create(outputDir)
 
 # Break line in log.
@@ -46,15 +46,43 @@ test_that("Testing Execution Runs", {
                                , mode = SERIAL_MODE))
         file.exists(file.path(outputDir, file = "workflow1_output.txt"))
     })
-    unlink(file.path(outputDir, file = "workflow1_output.txt"))
 
+    unlink(file.path(workingDir, file = "workflow1_output.txt"))
+
+    expect_true({
+        timingsList <- Execute(workflow1
+                               , argsContainer = list(n = 1)
+                               , mode = SERIAL_MODE
+                               , getModuleExecutionInfo = TRUE)
+        methods::is(timingsList, 'list')
+        all(sapply(timingsList, function(x) inherits(x[['startTime']], 'POSIXct')))
+        all(sapply(timingsList, function(x) inherits(x[['endTime']], 'POSIXct')))
+        all(sapply(timingsList, function(x) x[['name']]) %in% c(sapply(workflow1$getAllModules(), function(x) x$getName(), USE.NAMES = FALSE, simplify = TRUE), workflow1$getName()))
+        file.exists(file.path(workingDir, file = "workflow1_output.txt"))
+    })
+    unlink(file.path(workingDir, file = "workflow1_output.txt"))
+        
     expect_true({
         capture.output(Execute(workflow1
                                , argsContainer = list(n = 1)
                                , mode = PARALLEL_MODE))
         file.exists(file.path(outputDir, file = "workflow1_output.txt"))
     })
-    unlink(file.path(outputDir, file = "workflow1_output.txt"))
+
+    unlink(file.path(workingDir, file = "workflow1_output.txt"))
+    
+    expect_true({
+        workflowTimingsDT <- Execute(workflow1
+                                     , argsContainer = list(n = 1)
+                                     , mode = PARALLEL_MODE
+                                     , getModuleExecutionInfo = TRUE)
+        methods::is(timingsList, 'list')
+        all(sapply(timingsList, function(x) inherits(x[['startTime']], 'POSIXct')))
+        all(sapply(timingsList, function(x) inherits(x[['endTime']], 'POSIXct')))
+        all(sapply(timingsList, function(x) x[['name']]) %in% c(sapply(workflow1$getAllModules(), function(x) x$getName(), USE.NAMES = FALSE, simplify = TRUE), workflow1$getName()))
+        file.exists(file.path(workingDir, file = "workflow1_output.txt"))
+    })
+    unlink(file.path(workingDir, file = "workflow1_output.txt"))
 })
 
 #########################

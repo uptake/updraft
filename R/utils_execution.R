@@ -63,5 +63,5 @@ SetExecutionSettings <- function(mode
         UpDraftSettings$errorLogger("*UpDraft* selected execution mode is not valid")
     }
     
-    return(invisible(NULL))
+    return(NULL)
 }

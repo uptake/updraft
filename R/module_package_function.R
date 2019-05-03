@@ -12,7 +12,7 @@
 #'             \item{\bold{\code{name}}: Unique character string that identifies this module instance.}
 #'             \item{\bold{\code{fun}}: function this module will execute. Must be a character string.}
 #'             \item{\code{package}: Name of the R package \code{fun}. Must be a character string.}
-#'             \item{\code{assignedProcesses}: Integer number of processes to assign to the execution of this module.}
+#'             \item{\code{assignedProcesses}: Integer number of processess to assign to the execution of this module.}
 #'         }
 #'     }
 #' }
@@ -48,13 +48,6 @@
 #'         }
 #'     }
 #'     
-#'     \item{\code{getName()}}{
-#'         \itemize{
-#'             \item{Gets the name of this function.}
-#'             \item{\bold{Returns}: character string that is the name of this module.}
-#'         }
-#'     }
-#'     
 #'     \item{\code{getOutput()}}{
 #'         \itemize{
 #'             \item{Gets the output of the function executed by this module.}
@@ -83,6 +76,7 @@
 #'             \item{\bold{Returns}: \code{NULL}}
 #'         }
 #'     }
+#'     
 #' }
 #' @section Private:
 #' \describe{
@@ -101,12 +95,6 @@
 #'     \item{\code{futurePromise}}{
 #'         \itemize{
 #'             \item{Stores promise of future output of a function.}
-#'         }
-#'     }
-#'     
-#'     \item{\code{name}}{
-#'         \itemize{
-#'             \item{Unique character string that identifies this module instance.}
 #'         }
 #'     }
 #'     
@@ -130,14 +118,14 @@ PackageFunctionModule <- R6::R6Class("PackageFunctionModule"
                               , package = 'base'
                               , assignedProcesses = 1
         ) {
-            private$name <- name
+            super$setName(name)
             private$fun <- fun
             private$package <- package
             if(!is.null(assignedProcesses)) {
                 private$assignedProcesses <- assignedProcesses   
             }
             
-            return(self$errorCheck())
+            self$errorCheck()
         }
         
         , clearOutputCache = function() {
@@ -148,13 +136,13 @@ PackageFunctionModule <- R6::R6Class("PackageFunctionModule"
 
             private$futurePromise <- NULL
 
-            return(invisible(self))
+            return(NULL)
         }
         
         , errorCheck = function(executionCheck = FALSE
                                 , ...
         ) {
-            if (!is.character(private$fun) || !is.character(private$package) || !is.character(private$name)) {
+            if (!is.character(private$fun) || !is.character(private$package) || !is.character(super$getName())) {
                 UpDraftSettings$errorLogger("fun, package, name values must be of type character")
             }
             
@@ -162,7 +150,7 @@ PackageFunctionModule <- R6::R6Class("PackageFunctionModule"
                 UpDraftSettings$errorLogger("fun value cannot be an empty string")
             }
             
-            if (private$name == '') {
+            if (super$getName() == '') {
                 UpDraftSettings$errorLogger("name value cannot be an empty string")
             }
     
@@ -170,11 +158,7 @@ PackageFunctionModule <- R6::R6Class("PackageFunctionModule"
                 UpDraftSettings$errorLogger("assignedProcesses must be a single whole number numeric")    
             }
             
-            return(invisible(self))
-        }
-        
-        , getName = function() {
-            return(private$name)
+            return(NULL)
         }
         
         , getFuncObj = function() {
@@ -189,9 +173,15 @@ PackageFunctionModule <- R6::R6Class("PackageFunctionModule"
         
         , getOutput = function() {
             if (self$hasCompleted()) {
-                return(future::value(private$futurePromise))
+                out <- tryCatch(expr = {future::value(private$futurePromise)}
+                                , error = function(e) {return(FALSE)})
+                if(is.logical(out) && !out) {
+                    super$setExecutionStatus(FALSE)
+                } else {
+                    super$setExecutionStatus(TRUE)
+                }
+                return(out)
             }
-            
             return(NULL)
         }
         
@@ -199,7 +189,7 @@ PackageFunctionModule <- R6::R6Class("PackageFunctionModule"
             internalState = list()
 
             internalState[["class"]] <- class(self)[1]
-            internalState[['name']] <- private$name
+            internalState[['name']] <- super$getName()
             internalState[['fun']] <- private$fun
             internalState[['package']] <- private$package
             internalState[['assignedProcesses']] <- private$assignedProcesses
@@ -212,10 +202,15 @@ PackageFunctionModule <- R6::R6Class("PackageFunctionModule"
                 return(FALSE)
             }
             
+            ## Capturing the end time of the module execution.
+            ## This will be off by a couple of secs as this isn't an explicite wrapper around the future call.
+            ## We do have a execution time logging statement in the function FutureFunctionCall.
+            super$setModuleEndTime()
             return(TRUE)
         }
         
         , startExecution = function(args) {
+            super$setModuleStartTime()
             if (private$package == "") {
                 private$futurePromise <- FutureFunctionCall(func = private$fun
                                                             , args = args
@@ -228,17 +223,16 @@ PackageFunctionModule <- R6::R6Class("PackageFunctionModule"
                                                             , assignedProcesses = private$assignedProcesses)
             }
 
-            return(invisible(NULL))
+            return(NULL)
         }
+        
     )
     
     , private = list(
         fun = ""
         , futurePromise = NULL
-        , name = ""
         , package = ""
         , assignedProcesses = 1
-        
     )
 )
 

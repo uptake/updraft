@@ -8,7 +8,7 @@ rm(list=ls(all=TRUE))
 baseDir <- normalizePath(file.path('.'))
 testInputDir <- normalizePath(file.path(baseDir,'inst'))
 
-outputDir <- file.path(tempdir(), "output")
+outputDir <- file.path(baseDir, "output")
 dir.create(outputDir)
 
 # Break line in log.
@@ -38,7 +38,7 @@ UpDraftSettings$update(errorLogger = function(x){print(paste("ERROR!",lapply(x,a
 test_that("Testing LogStackTrace works with no file", {
     output <- capture.output(value <- FutureFunctionCall(func = func2, args = list(a=1,c=2)))
     expect_error(future::value(value))
-    # expect_true(grepl("ERROR",value$value$message))  # TODO Get this Unit Test Working with Travis
+    # expect_true(grepl("ERROR",value$value$message))
 })
 
 test_that("Testing LogStackTrace works with a file", {

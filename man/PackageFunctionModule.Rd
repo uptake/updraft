@@ -20,7 +20,7 @@ Implementation of \code{ModuleInterface} for executing a function in a R package
             \item{\bold{\code{name}}: Unique character string that identifies this module instance.}
             \item{\bold{\code{fun}}: function this module will execute. Must be a character string.}
             \item{\code{package}: Name of the R package \code{fun}. Must be a character string.}
-            \item{\code{assignedProcesses}: Integer number of processes to assign to the execution of this module.}
+            \item{\code{assignedProcesses}: Integer number of processess to assign to the execution of this module.}
         }
     }
 }
@@ -59,13 +59,6 @@ Implementation of \code{ModuleInterface} for executing a function in a R package
         }
     }
     
-    \item{\code{getName()}}{
-        \itemize{
-            \item{Gets the name of this function.}
-            \item{\bold{Returns}: character string that is the name of this module.}
-        }
-    }
-    
     \item{\code{getOutput()}}{
         \itemize{
             \item{Gets the output of the function executed by this module.}
@@ -94,6 +87,7 @@ Implementation of \code{ModuleInterface} for executing a function in a R package
             \item{\bold{Returns}: \code{NULL}}
         }
     }
+    
 }
 }
 
@@ -115,12 +109,6 @@ Implementation of \code{ModuleInterface} for executing a function in a R package
     \item{\code{futurePromise}}{
         \itemize{
             \item{Stores promise of future output of a function.}
-        }
-    }
-    
-    \item{\code{name}}{
-        \itemize{
-            \item{Unique character string that identifies this module instance.}
         }
     }
     

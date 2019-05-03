@@ -9,18 +9,68 @@
 ModuleInterface
 }
 \description{
-Defines a contract of implementation for any module based class, i.e. a class that extends this
-             interface. This class cannot be instantiated directly as it is abstract.
+Defines a contract of implementation for any module based class,
+  i.e. a class that extends this interface. This class cannot be instantiated
+  directly as it is abstract.
 }
 \section{Contracted Methods}{
+ \describe{
+  \item{\code{clearOutputCache()}}{Clears out the cached output of the
+  associated module.} 
+  \item{\code{getFuncObj()}}{Gets the base R function object that is called 
+      when the associated module's execution is started.}
+  \item{\code{getInput()}}{Gets a named logical vector where the names are
+      the possible inputs into a module and the values indicate if an input
+      is required.} 
+  \item{\code{getOutput()}}{Gets the output of the associated module.} 
+  \item{\code{hasCompleted()}}{Indicates if the associated module's execution
+      has completed.} 
+  \item{\code{startExecution(argsList)}}{Starts the execution of the 
+      associated module with \code{argsList} as arguments.}
+  \item{\code{getName()}}{
+        \itemize{\item{Gets the name of this function.}
+                 \item{\bold{Returns}: character string that is the name
+                      of this module.}}}
+  \item{\code{setName(arg)}}{Set the name of the module. Considers arg of
+      length 1 of character type.}
+  \item{\code{setModuleStartTime()}}{Set the current system time as the time
+      when the execution of the associated module was initiated.}
+  \item{\code{getModuleStartTime()}}{Get the time when the execution of the
+      associated module was initiated.} 
+  \item{\code{setModuleEndTime()}}{Set the current system time as the time 
+      when the execution of the associated module was completed} 
+  \item{\code{getModuleEndTime()}}{Get the time when the execution of the
+      associated module was completed.}
+  \item{\code{setExecutionStatus(arg)}}{Set the status of execution - whether
+      it was successfully completed or not. \code{arg} indicates a logical 
+      vector of length 1.} 
+  \item{\code{getExecutionStatus()}}{Get the status of execution - whether 
+      it was successfully completed or not.}
+  \item{\code{getExecutionTimings()}}{ 
+      \itemize{\item{The list of timings indicating the module name, 
+                   start-time and end-time.}
+               \item{\bold{Returns}}{A \code{list} with: \code{name}, 
+                   \code{startTime} & \code{endTime} of the associated module
+                   was initiated.}
+     } 
+  } 
+}
+}
 
-\describe{
-     \item{\code{clearOutputCache()}}{Clears out the cached output of the associated module.}
-     \item{\code{getFuncObj()}}{Gets the base R function object that is called when the associated module's execution is started.}
-     \item{\code{getInput()}}{Gets a named logical vector where the names are the possible inputs into a module and the values indicate if an input is required.}
-     \item{\code{getOutput()}}{Gets the output of the associated module.}
-     \item{\code{hasCompleted()}}{Indicates if the associated module's execution has completed.}
-     \item{\code{startExecution(argsList)}}{Starts the execution of the associated module with \code{argsList} as arguments.}
+\section{Private}{
+ \describe{
+  \item{\code{moduleStartTime}}{The time when the execution of the associated
+      module was initiated.}
+  \item{\code{moduleEndTime}}{The time when the execution of the associated
+      module was completed} 
+  \item{\code{successfulExecution}}{A logical vector of length 1 that 
+      indicates whether the module was successfully executed. It could take 
+      the following values: \itemize{ 
+                                \item{\code{NULL}}{Module Execution incomplete.}
+                                \item{\code{FALSE}}{Execution Failed.}
+                                \item{\code{TRUE}}{Successful execution.} 
+      }
+  } 
 }
 }
 
