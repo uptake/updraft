@@ -1,0 +1,57 @@
+---
+title: "Build and Execute Modular Workflows in R"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Build and Execute Modular Workflows in R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(updraft)
+```
+
+
+`updraft` is an R package designed to simplify building and executing of "workflows", or a sequence of modular pieces of code with interdependencies that must be run. This enables you to decompose your code into focused, modular components ("modules") and then execute without worrying about managing the dependencies between each. Additionally, this package enables you to:
+
+- automatically parallelize the execution of your workflow
+- visualize your workflow 
+- save and load your workflow from file
+
+Below is an introduction to the concepts underlying `updraft`, along with some examples of how it can be leveraged.
+
+## Building a workflow
+
+### Module
+
+The `Module` is the basic building block of `updraft`. A `Workflow` is merely a set of `Module` to be executed. The smaller and more focused these are the better. There are two existing implementations, both aligning to the interface in `ModuleInterface`.
+
+#### Package Function Module
+
+The `PackageFunctionModule` object is for when you merely want to execute a function that exists in some package. For example, 
+
+```{r packageFunctionModule, eval=TRUE}
+
+pasteInputs <- PackageFunctionModule$new(name = "pasteInputs"
+                                         , fun = "paste0"
+                                         , package = "base")
+```
+
+
+#### Custom Function
+
+
+### Connection
+
+### Workflow
+
+## Execution of a workflow
+

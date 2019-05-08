@@ -23,8 +23,10 @@ Suggests:
     covr,
     knitr,
     R.utils,
-    testthat
+    testthat,
+    rmarkdown
 License: file LICENSE
 LazyData: NA
 RoxygenNote: 6.1.1
 Encoding: UTF-8
+VignetteBuilder: knitr
