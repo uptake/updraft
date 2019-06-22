@@ -1,4 +1,3 @@
-inst/doc
 # This is a file telling Git what other files to ignore
 
 # R stuff
@@ -7,6 +6,7 @@ inst/doc
 *.rda
 *.rds
 *.Rdata
+
 .Rproj.user
 # data files
 *.csv
@@ -15,8 +15,11 @@ inst/doc
 **/*.pdf
 # other misc stuff
 *.DS_Store
+inst/doc
 # pkgdown stuff
 docs
 # build artifacts
 **/*.tar.gz
 updraft.Rcheck/
+# vignettes
+vignettes/*.html

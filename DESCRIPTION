@@ -10,7 +10,8 @@ Description: Many workflows in R can be expressed as graphs of distinct processi
              to parallelize execution. This is where updraft comes in. updraft workflows
              are built through R6 classes and can be saved to disk in JSON format.
              UpDraft workflow execution supports both serial and parallel execution
-             without a user needing to directly interface with a multiprocessing or scheduling library. Plus, UpDraft can visualize workflows. It's pretty cool.
+             without a user needing to directly interface with a multiprocessing or scheduling library.
+             Plus, UpDraft can visualize workflows. It's pretty cool.
 Depends:
     R (>= 3.3.0)
 Imports:
@@ -23,8 +24,8 @@ Suggests:
     covr,
     knitr,
     R.utils,
-    testthat,
-    rmarkdown
+    rmarkdown,
+    testthat
 License: file LICENSE
 LazyData: NA
 RoxygenNote: 6.1.1
