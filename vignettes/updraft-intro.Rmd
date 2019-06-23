@@ -1,0 +1,272 @@
+---
+title: "Build and Execute Modular Workflows in R"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Build and Execute Modular Workflows in R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval=TRUE
+)
+
+library(updraft)
+```
+
+
+`updraft` is an R package designed to simplify building and executing "workflows", or a sequence of modular chunks of code with interdependencies that are configured to run on a set of inputs and produce a set of outputs. This enables you to decompose your code implementing a complex function into focused, modular components ("modules") that you can then execute without worrying about managing the dependencies between each. Additionally, this package enables you to:
+
+- automatically parallelize the execution of your workflow
+- visualize your workflow
+- save and load your workflow from file
+
+Below is an introduction to the concepts underlying `updraft`, along with some examples of how it can be leveraged.
+
+## Constructing and Running a Workflow
+
+### Module
+
+The `Module` is the basic building block of `updraft`. A `Workflow` is merely a set of `Module`s to be executed. The smaller and more single-purpose these `Modules` are, the better. There are two existing implementations, both aligning to the interface in `ModuleInterface`.
+
+#### Package Function Module
+
+The `PackageFunctionModule` object is for when you merely want to execute a function that exists in some package. For example,
+
+```{r packageFunctionModule}
+
+pasteInputs <- PackageFunctionModule$new(
+    name = "pasteInputs"
+    , fun = "paste0"
+    , package = "base"
+)
+
+```
+To execute this simple module outside of a workflow, we can do so as follows:
+
+```{r execModule}
+
+pasteInputs$startExecution(list("hello, ", "world!"))
+
+# to see the output
+pasteInputs$getOutput()
+
+```
+
+The node encapsulates the assigned function and allows you to access its output value, along with metadata related to the calculation.
+
+#### Custom Function
+
+More typically, you'll want to do more complicated operations than vanilla package function calls. This is accomplished with the `CustomFunctionModule` class.
+
+For example, let's say you want to apply a custom function to inputs. You can easily define the function and instantiate a `CustomFunctionModule` using it, as shown below:
+
+```{r customFunctionModule}
+
+myFunc <- function(a, b, c) {
+    return(a + 2*(floor(b/c)))
+}
+
+myModule <- CustomFunctionModule$new(
+    name = "myFunc"
+    , fun = myFunc
+)
+
+```
+
+As with the `PackageFunctionModule` we can merely execute this, but we also are able to access information regarding the state of execution, which is necessary to use these as building blocks for complex workflows. Below are some examples of those methods. 
+```{r execCustom}
+
+# If NULL, module passes base validations
+myModule$errorCheck()
+
+# Returns the module name
+myModule$getName()
+
+# Allows you to check whether module has its output available
+myModule$hasCompleted()
+
+# Can see which inputs will be used and are required
+myModule$getInputs()
+
+# Start execution and get results
+myModule$startExecution(list(a = 1, b = 2, c = 0.3))
+myModule$getOutput()
+
+```
+
+### Connection
+
+In order to use these modules, we need some way to designate how the outputs and inputs should be connected. That way, each module will wait until it has all the information it needs in order to execute its function and create its output. This is done using components aligning to the `ConnectionInterface` class.
+
+#### DirectedConnection
+
+This is the most straightforward implementation of a connection. Let's say we have two modules:
+
+```{r directConnectionSetup}
+
+headModule = CustomFunctionModule$new(
+    name = "headModule"
+    , fun = function(x) {
+        5*x
+    }
+)
+
+tailModule = CustomFunctionModule$new(
+    name = "tailModule"
+    , fun = function(a = 1, b = 10) {
+        a + b
+    }
+)
+
+```
+
+Let's say we want to run the `headModule` then pass the output directly to the `tailModule`. We would need some way to map the output from `headModule` to which argument of `tailModule` it should map to. This is done with a `DirectConnection`:
+
+```{r directConnection}
+
+conn <- DirectedConnection$new(
+    name = "conn"
+    , headModule = headModule
+    , tailModule = tailModule
+    , inputArgument = "a"
+)
+
+```
+
+#### Autowire
+
+If we construct our Modules such that the input argument names are consistent between nodes (i.e. an output with the name "a" should be used for the input with the name "a") we can simplify the process of creating connections. This is done by using the `Autowire` function.
+
+**NOTE: For this to work, the associated function object of a head module must explicitly return a named list.**
+
+```{r autowireSetup}
+
+startModule = CustomFunctionModule$new(
+    name = "startModule"
+    , fun = function(x) {
+        return(list(a = 5*x, b = x + 1))
+    }
+)
+
+aModule = CustomFunctionModule$new(
+    name = "aModule"
+    , fun = function(a) {
+        return(a*10)
+    }
+)
+
+bModule = CustomFunctionModule$new(
+    name = "bModule"
+    , fun = function(b) {
+        return(b*10)
+    }
+)
+
+```
+
+To run the autowire function:
+
+```{r autowire}
+
+connections <- Autowire(
+    headModules = startModule
+    , tailModules = c(aModule, bModule)
+)
+
+sapply(connections, function(conn) conn$getInputArgument())
+
+```
+
+### Workflow
+
+Now that we've introduced Modules and Connections, we have everything needed to construct a workflow!
+
+#### DAG Workflow
+
+Currently, all workflows in updraft are `DAGWorkflow` (directed acyclic graph). This just a collection of Connections and Modules (as we've introduced above), configured as to decompose a complex computation into a sequence of simpler ones. We'll go into the advantages of this later, but to begin we'll show a concrete example of hoow to construct this.
+
+#### Constructing a workflow
+
+To begin, we can start with an empty workflow.
+
+```{r workflow1}
+
+workflow <- DAGWorkflow$new(
+    name="myWorkflow"
+)
+
+```
+
+Let's add the modules and connections from our previous example to see how they look in a workflow:
+
+```{r workflow2}
+
+#### Modules ####
+startModule = CustomFunctionModule$new(
+    name = "startModule"
+    , fun = function(x) {
+        return(list(a = 5*x, b = x + 1))
+    }
+)
+
+aModule = CustomFunctionModule$new(
+    name = "aModule"
+    , fun = function(a) {
+        return(a*10)
+    }
+)
+
+bModule = CustomFunctionModule$new(
+    name = "bModule"
+    , fun = function(b) {
+        return(b*10)
+    }
+)
+
+#### Connections ####
+connections <- Autowire(
+    headModules = startModule
+    , tailModules = c(aModule, bModule)
+)
+
+#### Add to workflow ####
+workflow$addModules(c(startModule, aModule, bModule))
+workflow$addConnections(connections)
+
+#### Visualize it ####
+workflow$visualize()
+
+```
+
+You'll see that the DAG first computes the head module, then routes the outputs to the corresponding tail modules.
+
+#### Executing a workflow
+
+To execute a workflow, all we have to do is run:
+
+```{r execute}
+
+Execute(workflow, argsContainer = list(x = 1))
+
+```
+
+By default, this will not make use of parallelism. To do that, you can run:
+
+```{r executePar}
+
+Execute(
+    workflow
+    , argsContainer = list(x = 1)
+    , mode=PARALLEL_MODE
+)
+
+```
+
+Note that this may not speed up computation if there are limited opportunities for parallelization in your workflow (i.e. most of the modules will need to be executed sequentially).

@@ -6,20 +6,20 @@
 *.rda
 *.rds
 *.Rdata
-.Rproj.user
 
+.Rproj.user
 # data files
 *.csv
 **/*.csv
 **/*.xlsx
 **/*.pdf
-
 # other misc stuff
 *.DS_Store
-
+inst/doc
 # pkgdown stuff
 docs
-
 # build artifacts
 **/*.tar.gz
 updraft.Rcheck/
+# vignettes
+vignettes/*.html
